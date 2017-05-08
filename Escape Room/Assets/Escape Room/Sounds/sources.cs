@@ -20,5 +20,13 @@ public class sources : MonoBehaviour {
 	Quelle zu 17298__luffy__luffy-fire3:
 	https://www.freesound.org/people/luffy/sounds/17298/
 
+"Shamanistic" Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 3.0 License
+http://creativecommons.org/licenses/by/3.0/
+
+"Interloper" Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 3.0 License
+http://creativecommons.org/licenses/by/3.0/
+
     */
 }
