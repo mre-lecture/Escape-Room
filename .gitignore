@@ -28,3 +28,8 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+
+#As this suggests, the entire library folder may be ignored
+#http://answers.unity3d.com/questions/21065/which-folders-in-a-unity-project-are-critical-fold.html
+Escape Room/Library/
+Escape Room/Temp/
