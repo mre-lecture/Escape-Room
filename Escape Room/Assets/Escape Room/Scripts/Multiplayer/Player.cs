@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using Photon;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour {
+public class Player : PunBehaviour
+{
 
     public float speed = 10f;
 
