@@ -28,4 +28,12 @@ public class Player : PunBehaviour
         if (Input.GetKey(KeyCode.A))
             GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position - Vector3.right * speed * Time.deltaTime);
     }
+
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.isWriting)
+            stream.SendNext(GetComponent<Rigidbody>().position);
+        else
+            GetComponent<Rigidbody>().position = (Vector3)stream.ReceiveNext();
+    }
 }
