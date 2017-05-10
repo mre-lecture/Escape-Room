@@ -16,15 +16,13 @@ public class Player : PunBehaviour
 
     void Update()
     {
-        if (photonView.isMine) { 
-            if (photonView.isMine)
-            {
-                InputMovement();
-            }
-            else
-            {
-                SyncedMovement();
-            }
+        if (photonView.isMine)
+        {
+            InputMovement();
+        }
+        else
+        {
+            SyncedMovement();
         }
     }
 
