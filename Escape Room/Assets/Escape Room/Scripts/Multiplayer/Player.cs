@@ -8,10 +8,24 @@ public class Player : PunBehaviour
 
     public float speed = 10f;
 
+    private float lastSynchronizationTime = 0f;
+    private float syncDelay = 0f;
+    private float syncTime = 0f;
+    private Vector3 syncStartPosition = Vector3.zero;
+    private Vector3 syncEndPosition = Vector3.zero;
+
     void Update()
     {
-        if (photonView.isMine)
-            InputMovement();
+        if (photonView.isMine) { 
+            if (photonView.isMine)
+            {
+                InputMovement();
+            }
+            else
+            {
+                SyncedMovement();
+            }
+        }
     }
 
     void InputMovement()
@@ -32,8 +46,23 @@ public class Player : PunBehaviour
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
+        {
             stream.SendNext(GetComponent<Rigidbody>().position);
+        }
         else
-            GetComponent<Rigidbody>().position = (Vector3)stream.ReceiveNext();
+        {
+            syncEndPosition = (Vector3)stream.ReceiveNext();
+            syncStartPosition = GetComponent<Rigidbody>().position;
+
+            syncTime = 0f;
+            syncDelay = Time.time - lastSynchronizationTime;
+            lastSynchronizationTime = Time.time;
+        }
+    }
+
+    private void SyncedMovement()
+    {
+        syncTime += Time.deltaTime;
+        GetComponent<Rigidbody>().position = Vector3.Lerp(syncStartPosition, syncEndPosition, syncTime / syncDelay);
     }
 }
