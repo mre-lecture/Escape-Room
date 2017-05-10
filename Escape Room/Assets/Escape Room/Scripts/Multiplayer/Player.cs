@@ -1,6 +1,4 @@
 ﻿using Photon;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : PunBehaviour
@@ -16,21 +14,16 @@ public class Player : PunBehaviour
 
     void Update()
     {
-        if (photonView.isMine == false && PhotonNetwork.connected == true)
-        {
-            return;
-        }
 
-        InputMovement();
-
-        /*if (photonView.isMine)
+        if (photonView.isMine)
         {
             InputMovement();
+            InputColorChange();
         }
         else
         {
             SyncedMovement();
-        }*/
+        }
     }
 
     void InputMovement()
@@ -48,20 +41,24 @@ public class Player : PunBehaviour
             GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position - Vector3.right * speed * Time.deltaTime);
     }
 
-    /*void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
         {
             stream.SendNext(GetComponent<Rigidbody>().position);
+            stream.SendNext(GetComponent<Rigidbody>().velocity);
         }
         else
         {
-            syncEndPosition = (Vector3)stream.ReceiveNext();
-            syncStartPosition = GetComponent<Rigidbody>().position;
+            Vector3 syncPosition = (Vector3)stream.ReceiveNext();
+            Vector3 syncVelocity = (Vector3)stream.ReceiveNext();
 
             syncTime = 0f;
             syncDelay = Time.time - lastSynchronizationTime;
             lastSynchronizationTime = Time.time;
+
+            syncEndPosition = syncPosition + syncVelocity * syncDelay;
+            syncStartPosition = GetComponent<Rigidbody>().position;
         }
     }
 
@@ -69,5 +66,21 @@ public class Player : PunBehaviour
     {
         syncTime += Time.deltaTime;
         GetComponent<Rigidbody>().position = Vector3.Lerp(syncStartPosition, syncEndPosition, syncTime / syncDelay);
-    }*/
+    }
+
+    private void InputColorChange()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+            ChangeColorTo(new Vector3(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)));
+    }
+
+    [PunRPC]
+    void ChangeColorTo(Vector3 color)
+    {
+        GetComponent<Renderer>().material.color = new Color(color.x, color.y, color.z, 1f);
+
+        if (photonView.isMine)
+            photonView.RPC("ChangeColorTo", PhotonTargets.OthersBuffered, color);
+    }
+
 }
