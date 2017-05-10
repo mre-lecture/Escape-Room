@@ -8,7 +8,8 @@ public class Player : MonoBehaviour {
 
     void Update()
     {
-        InputMovement();
+        if (photonView.isMine)
+            InputMovement();
     }
 
     void InputMovement()
