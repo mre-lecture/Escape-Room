@@ -16,21 +16,14 @@ public class Player : PunBehaviour
 
     void Update()
     {
-        if (photonView.isMine == false && PhotonNetwork.connected == true)
-        {
-            return;
-        }
-
-        InputMovement();
-
-        /*if (photonView.isMine)
+        if (photonView.isMine)
         {
             InputMovement();
         }
         else
         {
             SyncedMovement();
-        }*/
+        }
     }
 
     void InputMovement()
@@ -48,7 +41,7 @@ public class Player : PunBehaviour
             GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position - Vector3.right * speed * Time.deltaTime);
     }
 
-    /*void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
         {
@@ -69,5 +62,5 @@ public class Player : PunBehaviour
     {
         syncTime += Time.deltaTime;
         GetComponent<Rigidbody>().position = Vector3.Lerp(syncStartPosition, syncEndPosition, syncTime / syncDelay);
-    }*/
+    }
 }
