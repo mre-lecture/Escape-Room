@@ -18,7 +18,7 @@ public class ViveManager : MonoBehaviour {
         }
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
         if (Instance == this)
         {
