@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CopyScript : Photon.MonoBehaviour {
+public class CopyPlayerMovement : Photon.MonoBehaviour {
 
     public int index = 1;
     
