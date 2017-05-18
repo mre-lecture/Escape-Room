@@ -17,10 +17,11 @@ public class SyncInteractableObjects : Photon.MonoBehaviour {
 
     void Update()
     {
-        if (!photonView.isMine)
+        if (!photonView.isMine && GetComponent<PhotonView>().ownerId != 0)
         {
-            transform.position = Vector3.Lerp(transform.position, this.correctPlayerPos, Time.deltaTime * 5);
-            transform.rotation = Quaternion.Lerp(transform.rotation, this.correctPlayerRot, Time.deltaTime * 5);
+            transform.position = Vector3.Lerp(transform.position, this.correctPlayerPos, Time.deltaTime * 15);
+            transform.rotation = Quaternion.Lerp(transform.rotation, this.correctPlayerRot, Time.deltaTime * 15);
+            
         }
     }
 
