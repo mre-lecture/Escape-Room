@@ -1,29 +1,35 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Valve.VR.InteractionSystem;
 
-public class KeyAnimationScript : MonoBehaviour {
+public class KeyAnimationScript : MonoBehaviour
+{
 
     public Animator animator;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         animator = GetComponent<Animator>();
         animator.enabled = false;
-        //animator.Play("Key_OpenDoorAnimation");
+        //GameObject door = GameObject.Find("Gate_door");
+        //door.GetComponent<Interactable>().enabled = false;
     }
-	
-	// Update is called once per frame
-	void Update () {
-        if (Input.GetKeyDown("1"))
-        {
-            animator.Play("Key_OpenDoorAnimation");
-        }
-	}
 
-    void OnTriggerEnter()
+    void OnTriggerEnter(Collider collider)
     {
-        animator.enabled = true;
-        animator.Play("Key_OpenDoorAnimation");
+        if (collider.gameObject.tag.Equals("KeyTrigger"))
+        {
+            animator.enabled = true;
+            animator.Play("Key_OpenDoorAnimation");
+            //GameObject door = GameObject.Find("Gate_door");
+            //door.GetComponent<Interactable>().enabled = true;
+        }
+    }
+
+    void DestroyKey()
+    {
+        Destroy(this.gameObject);
     }
 }
