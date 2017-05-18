@@ -4,13 +4,17 @@ using UnityEngine;
 using Valve.VR.InteractionSystem;
 
 public class SyncInteractableObjects : Photon.MonoBehaviour {
-    
+
+    public Interactable interactableScript;
 
     private Vector3 correctPlayerPos;
     private Quaternion correctPlayerRot;
 
     void Awake()
     {
+        interactableScript = GetComponent<Interactable>();
+        interactableScript.onAttachedToHand += InteractableScript_onAttachedToHand;
+        interactableScript.onDetachedFromHand += InteractableScript_onDetachedFromHand;
         correctPlayerPos = transform.position;
         correctPlayerRot = transform.rotation;
     }
@@ -39,6 +43,19 @@ public class SyncInteractableObjects : Photon.MonoBehaviour {
             correctPlayerPos = (Vector3)stream.ReceiveNext();
             correctPlayerRot = (Quaternion)stream.ReceiveNext();
         }
+    }
+
+
+    private void InteractableScript_onAttachedToHand(Hand hand)
+    {
+        interactableScript.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.player.ID);
+        GetComponent<PhotonView>().RPC("SetRigidbodyToGrabbed", PhotonTargets.All);
+
+    }
+
+    private void InteractableScript_onDetachedFromHand(Hand hand)
+    {
+        GetComponent<PhotonView>().RPC("SetRigidbodyToDetached", PhotonTargets.All);
     }
 
 
