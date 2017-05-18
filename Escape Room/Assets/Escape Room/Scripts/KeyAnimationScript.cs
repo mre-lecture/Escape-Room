@@ -23,8 +23,10 @@ public class KeyAnimationScript : MonoBehaviour
         {
             animator.enabled = true;
             animator.Play("Key_OpenDoorAnimation");
-            //GameObject door = GameObject.Find("Gate_door");
-            //door.GetComponent<Interactable>().enabled = true;
+            
+            
+            GameObject door = GameObject.Find("Gate_door");
+            door.GetComponent<BoxCollider>().enabled = true;
         }
     }
 
