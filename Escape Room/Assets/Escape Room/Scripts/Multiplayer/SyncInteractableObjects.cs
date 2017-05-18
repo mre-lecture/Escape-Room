@@ -5,7 +5,7 @@ using Valve.VR.InteractionSystem;
 
 public class SyncInteractableObjects : Photon.MonoBehaviour {
 
-    public Interactable interactableScript;
+    private Interactable interactableScript;
 
     private Vector3 correctPlayerPos;
     private Quaternion correctPlayerRot;
