@@ -11,6 +11,7 @@ public class NetworkManager : MonoBehaviour {
     public virtual void Start()
     {
         PhotonNetwork.ConnectUsingSettings("0.1");
+        var temp = PhotonVoiceNetwork.Client;
     }
     
 
