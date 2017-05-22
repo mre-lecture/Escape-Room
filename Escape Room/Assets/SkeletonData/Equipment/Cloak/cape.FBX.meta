@@ -3,7 +3,21 @@ guid: 8696fb54e2e4fed4080992b20e8414c1
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
+    100000: Bone01
+    100002: Bone02
+    100004: Bone03
+    100006: Bone04
+    100008: Cape
+    100010: //RootNode
+    400000: Bone01
+    400002: Bone02
+    400004: Bone03
+    400006: Bone04
+    400008: Cape
+    400010: //RootNode
     4300000: Cape
+    11100000: //RootNode
+    13700000: Cape
   materials:
     importMaterials: 1
     materialName: 3
