@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 namespace Valve.VR.InteractionSystem{
 	
@@ -18,14 +20,21 @@ namespace Valve.VR.InteractionSystem{
 		[SerializeField]
 		private GameObject hiddenDoor;
 
+		[SerializeField]
+		private GameObject hand1,hand2,fallbackHand;
+
+
 		void OnTriggerEnter(Collider collider){
 			if (collider.gameObject == fittingObject) {	
 				//detach from hand
 				collider.gameObject.transform.parent = null;
+				//detach object from hand (depending on which hand it is in)
+				hand1.GetComponent<Hand>().DetachObject(collider.gameObject,true);
+				hand2.GetComponent<Hand>().DetachObject(collider.gameObject,true);
+				fallbackHand.GetComponent<Hand>().DetachObject(collider.gameObject,true);
 				//remove throwable script
-				//TODO this prevents the hidden cube to become throwable !!!
-				//-->Steam throwable script still seems to have locked the hand!
-				Destroy (collider.gameObject.GetComponent<Throwable> ());
+				//TODO causes some weird behaviour of the red cube when the collider gameobject is clicked again...
+				Destroy (collider.gameObject.GetComponent<Throwable> ().enabled = false);
 				//set final position of object
 				collider.gameObject.transform.position = finalPosition;
 				//set final rotation of object
@@ -34,6 +43,8 @@ namespace Valve.VR.InteractionSystem{
 				hiddenDoor.GetComponent<HiddenDoor>().fireEvent();
 			} 
 		}
+
+
 	}
 
 }
