@@ -16,6 +16,9 @@ namespace Valve.VR.InteractionSystem{
 			if (++eventsFired == eventsRequiredToOpenDoor) {
 				transform.Rotate(Vector3.right * 90);
 				hiddenContent.AddComponent<Throwable>();
+				//hiddenContent.GetComponent<Throwable> ().attachmentFlags = hiddenContent.GetComponent<Throwable> ().attachmentFlags | Hand.AttachmentFlags.DetachOthers;
+				hiddenContent.GetComponent<Throwable> ().onPickUp = new UnityEngine.Events.UnityEvent ();
+				hiddenContent.GetComponent<Throwable> ().onDetachFromHand = new UnityEngine.Events.UnityEvent ();
 			}
 		}
 	}

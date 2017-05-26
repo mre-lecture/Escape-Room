@@ -33,14 +33,15 @@ namespace Valve.VR.InteractionSystem{
 				hand2.GetComponent<Hand>().DetachObject(collider.gameObject,true);
 				fallbackHand.GetComponent<Hand>().DetachObject(collider.gameObject,true);
 				//remove throwable script
-				//TODO causes some weird behaviour of the red cube when the collider gameobject is clicked again...
-				Destroy (collider.gameObject.GetComponent<Throwable> ().enabled = false);
+				Destroy (collider.gameObject.GetComponent<Throwable>());
 				//set final position of object
 				collider.gameObject.transform.position = finalPosition;
 				//set final rotation of object
 				collider.gameObject.transform.eulerAngles = finalRotation;
 				//fire events of corresponding hidden door that might by unlocked now
 				hiddenDoor.GetComponent<HiddenDoor>().fireEvent();
+
+
 			} 
 		}
 
