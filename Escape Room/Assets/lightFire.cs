@@ -9,12 +9,15 @@ public class lightFire : MonoBehaviour {
 	private GameObject torchHead;
 
 	[SerializeField]
-	private GameObject fireSource;
+	private GameObject flame;
+
+	[SerializeField]
+	private GameObject light;
 
 	void OnTriggerEnter(Collider collider){		
-		if (collider.gameObject == torchHead) {				
-			fireSource.GetComponent<FireSource> ().isBurning = true;
-			fireSource.GetComponent<FireSource> ().burnTime = 100;
+		if (collider.gameObject == torchHead) {		
+			light.GetComponent<Light> ().enabled = true;
+			flame.GetComponent<ParticleSystem> ().Play ();
 		}
 	}
 }
