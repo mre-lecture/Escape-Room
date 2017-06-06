@@ -7,10 +7,20 @@ public class torchRotationSync : MonoBehaviour
     {        
         if (hand.GetStandardInteractionButtonUp())
         {
-            GetComponent<CircularDrive>().outAngle = 0;
-            //TODO: Adjust rotation to the scene
-            gameObject.transform.eulerAngles = new Vector3(0,180,0);
+            resetTorchRotation();
         } 
-    }    
+    }
+
+    private void OnHandHoverEnd(Hand hand)
+    {
+        resetTorchRotation();
+    }
+
+    private void resetTorchRotation()
+    {
+        GetComponent<CircularDrive>().outAngle = 0;
+        //TODO: Adjust rotation to the scene
+        gameObject.transform.eulerAngles = new Vector3(0, 180, 0);
+    }
 
 }
