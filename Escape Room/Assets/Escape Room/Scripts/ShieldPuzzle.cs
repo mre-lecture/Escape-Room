@@ -22,6 +22,11 @@ public class ShieldPuzzle : MonoBehaviour {
 
     public void onShieldRotated(GameObject shield)
     {
+        Debug.LogError("Disable rotation - " + shield.GetComponent<CircularDrive>().gameObject.name);
+        //shield.GetComponent<CircularDrive>().freezeOnMin = false;
+        //shield.GetComponent<CircularDrive>().enabled = false;
+        shield.GetComponent<CircularDrive>().maxAngle = -45;
+
         executedOrder[progress] = shield;
         progress++;
 
@@ -71,14 +76,19 @@ public class ShieldPuzzle : MonoBehaviour {
     {
         foreach (GameObject shield in solutionOrderShields)
         {
+            progress = 0;
+            
             //detach shield, if attached to a hand
             Hand[] hands = FindObjectsOfType<Hand>();
             foreach (Hand hand in hands)
             {
                 hand.DetachObject(shield, true);
             }
-
-
+            //shield.GetComponent<CircularDrive>().enabled = true;
+            shield.GetComponent<CircularDrive>().outAngle = 0;
+            //shield.GetComponent<CircularDrive>().freezeOnMin = true;
+            shield.GetComponent<CircularDrive>().maxAngle = 45;
+            Debug.LogError("Enable rotation");
 
             //after animation fix, this should be delted
             Debug.LogError("Delete after shield animation fix");
