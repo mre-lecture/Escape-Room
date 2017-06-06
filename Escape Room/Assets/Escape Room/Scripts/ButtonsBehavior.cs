@@ -26,9 +26,16 @@ public class ButtonsBehavior : MonoBehaviour {
 
     }
 
-    /*
-     * For Trigger Enter - Check Collider
-    private void OnTriggerEnter(Collider collider)
+    private void HandHoverUpdate(Hand hand)
+    {
+        if (hand.GetStandardInteractionButtonDown())
+        {
+            pressButton();
+        }
+    }
+
+    // For Trigger Enter - Check Collider
+    private void pressButton()
     {
         if (pressed) {
             activeButton.transform.position += new Vector3(0, 0, -DISTANCE);
@@ -40,5 +47,5 @@ public class ButtonsBehavior : MonoBehaviour {
         }
         
     }
-    */
+    
 }
