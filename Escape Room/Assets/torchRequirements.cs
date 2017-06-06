@@ -24,10 +24,18 @@ namespace Valve.VR.InteractionSystem{
 					if (go.transform.localRotation.z < .17f)
 						unlocked = false;					
 				}
-				if (unlocked) {					
-					light.GetComponent<Light> ().enabled = true;
-					flame.GetComponent<ParticleSystem> ().Play ();
-				}
+                if (unlocked)
+                {
+                    light.GetComponent<Light>().enabled = true;
+                    flame.GetComponent<ParticleSystem>().Play();
+                    
+                    //disable rotation of correct used torches
+                    foreach (GameObject go in requiredTorches)
+                    {
+                        Destroy(go.GetComponent<CircularDrive>());
+                        go.transform.eulerAngles = new Vector3(0, 180, 20);
+                    }
+                }
 			}
 		}
 	}
