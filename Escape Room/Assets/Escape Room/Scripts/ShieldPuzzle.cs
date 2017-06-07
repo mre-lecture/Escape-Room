@@ -22,10 +22,8 @@ public class ShieldPuzzle : MonoBehaviour {
 
     public void onShieldRotated(GameObject shield)
     {
-        Debug.LogError("Disable rotation - " + shield.GetComponent<CircularDrive>().gameObject.name);
-        //shield.GetComponent<CircularDrive>().freezeOnMin = false;
-        //shield.GetComponent<CircularDrive>().enabled = false;
-        shield.GetComponent<CircularDrive>().maxAngle = -45;
+		// disable rotation -> make min and max angle equal
+		shield.GetComponent<CircularDrive>().maxAngle = shield.GetComponent<CircularDrive>().minAngle;
 
         executedOrder[progress] = shield;
         progress++;
@@ -60,9 +58,7 @@ public class ShieldPuzzle : MonoBehaviour {
 
 
     private void unlockKingsShield()
-    {
-        kingsShield.GetComponent<CircularDrive>().enabled = false;
-        
+    {   
         kingsShield.AddComponent<Interactable>();
         kingsShield.AddComponent<Throwable>();
         //manually instantiate both unity events because of some weird bug they are
@@ -84,27 +80,14 @@ public class ShieldPuzzle : MonoBehaviour {
             {
                 hand.DetachObject(shield, true);
             }
-            //shield.GetComponent<CircularDrive>().enabled = true;
+
+			// reset angles
+			shield.GetComponent<CircularDrive>().maxAngle = 0;
             shield.GetComponent<CircularDrive>().outAngle = 0;
-            //shield.GetComponent<CircularDrive>().freezeOnMin = true;
-            shield.GetComponent<CircularDrive>().maxAngle = 45;
-            Debug.LogError("Enable rotation");
-
-            //after animation fix, this should be delted
-            Debug.LogError("Delete after shield animation fix");
-            Vector3 temp = shield.transform.rotation.eulerAngles;
-            temp.x = 0f;
-            shield.transform.rotation = Quaternion.Euler(temp);
-            if (shield.GetComponent<Animation>() != null)
-            {
 
 
-
-
-                Debug.LogError("Keep this after shield animation fix");
-                //rotate shields back
-                shield.GetComponent<Animation>().Play();
-            }
+            //rotate shields back
+            shield.GetComponent<Animation>().Play();
         }
     }
 }
