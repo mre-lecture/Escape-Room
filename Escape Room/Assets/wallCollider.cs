@@ -8,12 +8,16 @@ public class wallCollider : MonoBehaviour {
 	[SerializeField]
 	private GameObject hand1,hand2,fallbackHand;
 
+	[SerializeField]
+	private Rigidbody rigidbody;
+
 	private bool onHand,resetCubeDueToCollision;
-	private bool validCollision;
+	private bool collision;
 
 	private float oldPositionX, oldPositionY, oldPositionZ, newPositionX, newPositionY, newPositionZ;
 	private float oldRotationX, oldRotationY, oldRotationZ, newRotationX, newRotationY, newRotationZ;
 
+	private Hand handOnObject;
 
 	private void HandAttachedUpdate( Hand hand )
 	{		
@@ -38,12 +42,15 @@ public class wallCollider : MonoBehaviour {
 
 	private void OnAttachedToHand( Hand hand )
 	{
-		onHand = true;			
+		gameObject.transform.parent = null;
+		onHand = true;		
+		handOnObject = hand;
 	}
 
 	private void OnDetachedFromHand( Hand hand )
 	{
-		onHand = false;		
+		onHand = false;	
+		handOnObject = null;
 	}
 
 	private void OnTriggerEnter(Collider collider)
@@ -51,7 +58,8 @@ public class wallCollider : MonoBehaviour {
 		if (onHand && collider.gameObject.tag.Equals("collidingTexture")) {
 			resetCubeDueToCollision = true;
 			//GetComponent<Throwable> ().hack = true;
-			gameObject.transform.parent = null;
+			//gameObject.transform.parent = null;
+			collision = true;
 		}
 	}
 
@@ -59,6 +67,7 @@ public class wallCollider : MonoBehaviour {
 		if (onHand && collider.gameObject.tag.Equals("collidingTexture")) {
 			resetCubeDueToCollision = false;
 			//GetComponent<Throwable> ().hack = false;
+			collision=false;
 		}
 	}
 
@@ -91,12 +100,16 @@ public class wallCollider : MonoBehaviour {
 	}
 
 	void Update(){
+		//Debug.Log(gameObject.)
 		//TODO: Die Funktion HandAttachedUpdate in Throwable konkuriert mit dieser Funktion, da sie die akutelle Position immer auf die Hand setzt.
 		//TODO: ne das alleine wars nicht (hab zwischenzeitlich den bool hack eingeführt)...vllt weils ein child von der hand ist?
 		//TODO: besser, aber auch noch nicht die ultimative Lösung
 		if (resetCubeDueToCollision) {
+			//gameObject.transform.parent = null;
 			gameObject.transform.position = new Vector3 (oldPositionX, oldPositionY, oldPositionZ);
 			gameObject.transform.eulerAngles = new Vector3 (oldRotationX, oldRotationY, oldRotationZ);
+		} else if(handOnObject!=null){
+			gameObject.transform.position = new Vector3 (handOnObject.transform.position.x, handOnObject.transform.position.y, handOnObject.transform.position.z);
 		}
 	}
 
