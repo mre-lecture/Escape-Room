@@ -17,7 +17,10 @@ public class wallCollider : MonoBehaviour {
 	private float oldPositionX, oldPositionY, oldPositionZ, newPositionX, newPositionY, newPositionZ;
 	private float oldRotationX, oldRotationY, oldRotationZ, newRotationX, newRotationY, newRotationZ;
 
-	private Hand handOnObject;
+	private Hand playerHand;
+	private Vector3 internalVelocity;
+	private Vector3 colliderPosition;
+	private Vector3 pos;
 
 	private void HandAttachedUpdate( Hand hand )
 	{		
@@ -36,6 +39,7 @@ public class wallCollider : MonoBehaviour {
 			newRotationY = gameObject.transform.eulerAngles.y;
 			newRotationZ = gameObject.transform.eulerAngles.z;
 
+			internalVelocity = new Vector3 (newPositionX - oldPositionX, newPositionY - oldPositionY, newPositionZ - oldPositionZ);
 			gameObject.transform.hasChanged = false;
 		} 
 	}
@@ -44,73 +48,79 @@ public class wallCollider : MonoBehaviour {
 	{
 		gameObject.transform.parent = null;
 		onHand = true;		
-		handOnObject = hand;
+		playerHand = hand;
 	}
 
 	private void OnDetachedFromHand( Hand hand )
 	{
 		onHand = false;	
-		handOnObject = null;
+		playerHand = null;
 	}
 
 	private void OnTriggerEnter(Collider collider)
 	{
 		if (onHand && collider.gameObject.tag.Equals("collidingTexture")) {
 			resetCubeDueToCollision = true;
-			//GetComponent<Throwable> ().hack = true;
-			//gameObject.transform.parent = null;
 			collision = true;
+
+			bool movingPositiveX = internalVelocity.x > 0;
+			bool movingPositiveY = internalVelocity.y > 0;
+			bool movingPositiveZ = internalVelocity.z > 0;
+
+			float checkPosX = gameObject.GetComponent<Renderer> ().bounds.max.x;
+			float checkPosY = gameObject.GetComponent<Renderer> ().bounds.max.y;
+			float checkPosZ = gameObject.GetComponent<Renderer> ().bounds.max.z;
+
+			if(!movingPositiveX)
+				checkPosX = gameObject.GetComponent<Renderer> ().bounds.min.x;			
+			if(!movingPositiveY)
+				checkPosY = gameObject.GetComponent<Renderer> ().bounds.min.y;
+			if(!movingPositiveZ)
+				checkPosZ = gameObject.GetComponent<Renderer> ().bounds.min.z;
+
+			pos = new Vector3 (checkPosX, checkPosY, checkPosZ);
+			//TODO: Eine Kollision beschränkt eigentlich nur in eine Richtung die Bewegung --> nur in diese Prüfen
+			//TODO: Das Objekt dann nicht auf die Extremwerte (Äußeren Werte setzen, da sonst der Mittelpunkt da hin kommt und sodurch das Objekt in der Wand steckt)
+			Debug.Log("Koordinatenwerte in Berührungsrichtung: "+pos);
+			while (collider.bounds.Intersects(gameObject.GetComponent<Renderer>().bounds)) {
+				gameObject.transform.position = new Vector3 (gameObject.transform.position.x - internalVelocity.x, gameObject.transform.position.y - internalVelocity.y, gameObject.transform.position.z - internalVelocity.z);
+				Debug.Log ("korrigierte Werte: " + pos);
+			}
+
+			//handleCollision ();
+			Debug.Log ("Cube has to be set to " + pos + " to not touch the colliding object");
 		}
+		Debug.Log ("Internal Velocity on collision: " + internalVelocity);
+
 	}
 
 	private void OnTriggerExit(Collider collider){
 		if (onHand && collider.gameObject.tag.Equals("collidingTexture")) {
 			resetCubeDueToCollision = false;
-			//GetComponent<Throwable> ().hack = false;
 			collision=false;
 		}
 	}
 
-	private IEnumerator handleCollision(){
-		yield return new WaitForEndOfFrame();
+	private void handleCollision(){		
 		Debug.Log ("RESET");
+	
+		gameObject.transform.position = pos;
 
-
-		gameObject.transform.position = new Vector3 (oldPositionX, oldPositionY, oldPositionZ);
-		gameObject.transform.eulerAngles = new Vector3 (oldRotationX, oldRotationY, oldRotationZ);
-
-		newPositionX = oldPositionX;
-		newPositionY = oldPositionY;
-		newPositionZ = oldPositionZ;
-		newRotationX = oldRotationX;
-		newRotationY = oldRotationY;
-		newRotationZ = oldRotationZ;
-
-		/*
-		//detach from hand
-		gameObject.transform.parent = null;
-		//detach object from hand (depending on which hand it is in)
-		hand1.GetComponent<Hand>().DetachObject(gameObject,true);
-		hand2.GetComponent<Hand>().DetachObject(gameObject,true);
-		fallbackHand.GetComponent<Hand>().DetachObject(gameObject,true);
-
-		GetComponent<Throwable> ().onPickUp = new UnityEngine.Events.UnityEvent ();
-		GetComponent<Throwable> ().onDetachFromHand = new UnityEngine.Events.UnityEvent ();
-		*/
+		newPositionX = pos.x;
+		newPositionY = pos.y;
+		newPositionZ = pos.z;
 	}
 
-	void Update(){
-		//Debug.Log(gameObject.)
-		//TODO: Die Funktion HandAttachedUpdate in Throwable konkuriert mit dieser Funktion, da sie die akutelle Position immer auf die Hand setzt.
-		//TODO: ne das alleine wars nicht (hab zwischenzeitlich den bool hack eingeführt)...vllt weils ein child von der hand ist?
-		//TODO: besser, aber auch noch nicht die ultimative Lösung
+	void Update(){	
+
 		if (resetCubeDueToCollision) {
 			//gameObject.transform.parent = null;
-			gameObject.transform.position = new Vector3 (oldPositionX, oldPositionY, oldPositionZ);
-			gameObject.transform.eulerAngles = new Vector3 (oldRotationX, oldRotationY, oldRotationZ);
-		} else if(handOnObject!=null){
-			gameObject.transform.position = new Vector3 (handOnObject.transform.position.x, handOnObject.transform.position.y, handOnObject.transform.position.z);
+			//gameObject.transform.position = new Vector3 (oldPositionX, oldPositionY, oldPositionZ);
+			//gameObject.transform.eulerAngles = new Vector3 (oldRotationX, oldRotationY, oldRotationZ);
+		} else if(playerHand!=null){
+			gameObject.transform.position = new Vector3 (playerHand.transform.position.x, playerHand.transform.position.y, playerHand.transform.position.z);
 		}
+
 	}
 
 
