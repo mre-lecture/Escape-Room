@@ -4,45 +4,13 @@ using UnityEngine;
 using Valve.VR.InteractionSystem;
 
 public class wallCollider : MonoBehaviour {
-
-	[SerializeField]
-	private GameObject hand1,hand2,fallbackHand;
-
-	[SerializeField]
-	private Rigidbody rigidbody;
-
-	private bool onHand,resetCubeDueToCollision;
-	private bool collision;
-
-	private float oldPositionX, oldPositionY, oldPositionZ, newPositionX, newPositionY, newPositionZ;
-	private float oldRotationX, oldRotationY, oldRotationZ, newRotationX, newRotationY, newRotationZ;
-
+	
+	private bool onHand;
 	private Hand playerHand;
-	private Vector3 internalVelocity;
-	private Vector3 colliderPosition;
-	private Vector3 pos;
-
-	private void HandAttachedUpdate( Hand hand )
-	{		
-		if (gameObject.transform.hasChanged) {			
-			oldPositionX = newPositionX;
-			oldPositionY = newPositionY;
-			oldPositionZ = newPositionZ;
-			oldRotationX = newRotationX;
-			oldRotationY = newRotationY;
-			oldRotationZ = newRotationZ;
-
-			newPositionX = gameObject.transform.position.x;
-			newPositionY = gameObject.transform.position.y;
-			newPositionZ = gameObject.transform.position.z;
-			newRotationX = gameObject.transform.eulerAngles.x;
-			newRotationY = gameObject.transform.eulerAngles.y;
-			newRotationZ = gameObject.transform.eulerAngles.z;
-
-			internalVelocity = new Vector3 (newPositionX - oldPositionX, newPositionY - oldPositionY, newPositionZ - oldPositionZ);
-			gameObject.transform.hasChanged = false;
-		} 
-	}
+	private bool isXAxisLimited, isYAxisLimited, isZAxisLimited;
+	private Collider limitatingColliderXAxis, limitatingColliderYAxis, limitatingColliderZAxis;
+	private float XAxisLimitDifference, YAxisLimitDifference, ZAxisLimitDifference;
+	private float oldPositionX, oldPositionY, oldPositionZ, newPositionX, newPositionY, newPositionZ;
 
 	private void OnAttachedToHand( Hand hand )
 	{
@@ -59,68 +27,71 @@ public class wallCollider : MonoBehaviour {
 
 	private void OnTriggerEnter(Collider collider)
 	{
-		if (onHand && collider.gameObject.tag.Equals("collidingTexture")) {
-			resetCubeDueToCollision = true;
-			collision = true;
+		if (onHand && collider.gameObject.GetComponent<limitatingStructure>() != null) {			
 
-			bool movingPositiveX = internalVelocity.x > 0;
-			bool movingPositiveY = internalVelocity.y > 0;
-			bool movingPositiveZ = internalVelocity.z > 0;
-
-			float checkPosX = gameObject.GetComponent<Renderer> ().bounds.max.x;
-			float checkPosY = gameObject.GetComponent<Renderer> ().bounds.max.y;
-			float checkPosZ = gameObject.GetComponent<Renderer> ().bounds.max.z;
-
-			if(!movingPositiveX)
-				checkPosX = gameObject.GetComponent<Renderer> ().bounds.min.x;			
-			if(!movingPositiveY)
-				checkPosY = gameObject.GetComponent<Renderer> ().bounds.min.y;
-			if(!movingPositiveZ)
-				checkPosZ = gameObject.GetComponent<Renderer> ().bounds.min.z;
-
-			pos = new Vector3 (checkPosX, checkPosY, checkPosZ);
-			//TODO: Eine Kollision beschränkt eigentlich nur in eine Richtung die Bewegung --> nur in diese Prüfen
-			//TODO: Das Objekt dann nicht auf die Extremwerte (Äußeren Werte setzen, da sonst der Mittelpunkt da hin kommt und sodurch das Objekt in der Wand steckt)
-			Debug.Log("Koordinatenwerte in Berührungsrichtung: "+pos);
-			while (collider.bounds.Intersects(gameObject.GetComponent<Renderer>().bounds)) {
-				gameObject.transform.position = new Vector3 (gameObject.transform.position.x - internalVelocity.x, gameObject.transform.position.y - internalVelocity.y, gameObject.transform.position.z - internalVelocity.z);
-				Debug.Log ("korrigierte Werte: " + pos);
+			//update limitation and set position of object using the new limitations 
+			//TODO: in schleife nur die neue Position berechnen und einmal am Ende setzen --> dann muss nur eine Positionsänderung synchronisiert werden --> vermutlich deutlich weniger traffic !!!
+			if (collider.gameObject.GetComponent<limitatingStructure> ().axis.ToString().Equals("X")) {				
+				isXAxisLimited = true;
+				limitatingColliderXAxis = collider;
+				while (collider.bounds.Intersects(gameObject.GetComponent<Renderer>().bounds)) {
+					gameObject.transform.position = new Vector3 (gameObject.transform.position.x - 0.1f, gameObject.transform.position.y, gameObject.transform.position.z);
+				}
+				XAxisLimitDifference = (collider.bounds.max.x-(collider.bounds.max.x - collider.bounds.min.x))-playerHand.transform.position.x;
+			} else if (collider.gameObject.GetComponent<limitatingStructure> ().axis.ToString().Equals("Y")) {				
+				isYAxisLimited = true;
+				limitatingColliderYAxis = collider;
+				while (collider.bounds.Intersects(gameObject.GetComponent<Renderer>().bounds)) {
+					gameObject.transform.position = new Vector3 (gameObject.transform.position.x, gameObject.transform.position.y - 0.1f, gameObject.transform.position.z);
+				}
+				YAxisLimitDifference = (collider.bounds.max.y-(collider.bounds.max.y - collider.bounds.min.y))-playerHand.transform.position.y;
+			} else if(collider.gameObject.GetComponent<limitatingStructure> ().axis.ToString().Equals("Z")) {				
+				isZAxisLimited = true;
+				limitatingColliderZAxis = collider;
+				while (collider.bounds.Intersects(gameObject.GetComponent<Renderer>().bounds)) {
+					gameObject.transform.position = new Vector3 (gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z - 0.1f);
+				}
+				ZAxisLimitDifference = (collider.bounds.max.z-(collider.bounds.max.z - collider.bounds.min.z))-playerHand.transform.position.z;
 			}
-
-			//handleCollision ();
-			Debug.Log ("Cube has to be set to " + pos + " to not touch the colliding object");
 		}
-		Debug.Log ("Internal Velocity on collision: " + internalVelocity);
-
-	}
-
-	private void OnTriggerExit(Collider collider){
-		if (onHand && collider.gameObject.tag.Equals("collidingTexture")) {
-			resetCubeDueToCollision = false;
-			collision=false;
-		}
-	}
-
-	private void handleCollision(){		
-		Debug.Log ("RESET");
-	
-		gameObject.transform.position = pos;
-
-		newPositionX = pos.x;
-		newPositionY = pos.y;
-		newPositionZ = pos.z;
 	}
 
 	void Update(){	
+		//update internal used positions
+		oldPositionX = newPositionX;
+		oldPositionY = newPositionY;
+		oldPositionZ = newPositionZ;
 
-		if (resetCubeDueToCollision) {
-			//gameObject.transform.parent = null;
-			//gameObject.transform.position = new Vector3 (oldPositionX, oldPositionY, oldPositionZ);
-			//gameObject.transform.eulerAngles = new Vector3 (oldRotationX, oldRotationY, oldRotationZ);
-		} else if(playerHand!=null){
-			gameObject.transform.position = new Vector3 (playerHand.transform.position.x, playerHand.transform.position.y, playerHand.transform.position.z);
+		newPositionX = playerHand.transform.position.x;
+		newPositionY = playerHand.transform.position.y;
+		newPositionZ = playerHand.transform.position.z;
+		
+		//update limitations and check if they still have to be applied
+		if (isXAxisLimited) {
+			XAxisLimitDifference += oldPositionX - newPositionX;
+		}
+		if (isYAxisLimited) {
+			YAxisLimitDifference += oldPositionY - newPositionY;
+		}
+		if (isZAxisLimited) {
+			ZAxisLimitDifference += oldPositionZ - newPositionZ;
 		}
 
+		if(playerHand!=null){
+			Vector3 oldPos = gameObject.transform.position;
+			Vector3 newPos = new Vector3 (playerHand.transform.position.x, playerHand.transform.position.y, playerHand.transform.position.z);
+
+			if (isXAxisLimited && XAxisLimitDifference<0) {
+				newPos.x = oldPos.x;
+			}
+			if (isYAxisLimited && YAxisLimitDifference<0) {
+				newPos.y = oldPos.y;
+			}
+			if (isZAxisLimited && ZAxisLimitDifference<0) {
+				newPos.z = oldPos.z;
+			}
+			gameObject.transform.position = newPos;
+		}
 	}
 
 
