@@ -5,9 +5,14 @@ using UnityEngine;
 public class CopyPlayerMovement : Photon.MonoBehaviour {
 
     public int index = 1;
-    
-	// Update is called once per frame
-	void Update () {
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
+
+    // Update is called once per frame
+    void Update () {
         if (photonView.isMine)
         {
             switch (index)

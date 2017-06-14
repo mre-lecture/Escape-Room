@@ -86,16 +86,6 @@ public class NetworkManager : MonoBehaviour {
                 ViveManager.Instance.rightHand.transform.rotation, 0);
         }
 
-        //SceneManager.LoadScene(1);
-    }
-
-    public void OnLeftRoom()
-    {
-        SceneManager.LoadScene(0);
-    }
-
-    public void OnDisconnectedFromPhoton()
-    {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
     }
 }
