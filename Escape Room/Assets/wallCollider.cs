@@ -2,137 +2,89 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR.InteractionSystem;
+using AssemblyCSharp;
 
-public class wallCollider : MonoBehaviour {
-	
-	private bool onHand;
+public class wallCollider : MonoBehaviour {	
+
 	private Hand playerHand;
-	private bool isXAxisLimited, isYAxisLimited, isZAxisLimited;
-	private Collider limitatingColliderXAxis, limitatingColliderYAxis, limitatingColliderZAxis;
-	private float XAxisLimitDifference, YAxisLimitDifference, ZAxisLimitDifference;
-	private float oldPositionX, oldPositionY, oldPositionZ, newPositionX, newPositionY, newPositionZ;
-	private bool isXAxisCollisionInverted, isYAxisCollisionInverted, isZAxisCollisionInverted;
+
+	private Vector3 oldObjectPos;
+	private Vector3 newObjectPos;
+	private Vector3 oldHandPos;
+	private Vector3 newHandPos;
+
+	private WallCollidingAxis xAxisCollider, yAxisCollider, zAxisCollider;
+
+	private void Awake(){
+		oldObjectPos = new Vector3 ();
+		newObjectPos = new Vector3 ();
+		oldHandPos = new Vector3 ();
+		newHandPos = new Vector3 ();
+		xAxisCollider = new WallCollidingAxis (WallCollidingAxis.Axis.X);
+		yAxisCollider = new WallCollidingAxis (WallCollidingAxis.Axis.Y);
+		zAxisCollider = new WallCollidingAxis (WallCollidingAxis.Axis.Z);
+	}
 
 	private void OnAttachedToHand( Hand hand )
 	{
 		gameObject.transform.parent = null;
-		onHand = true;		
 		playerHand = hand;
 	}
 
 	private void OnDetachedFromHand( Hand hand )
-	{
-		onHand = false;	
+	{		
 		playerHand = null;
 	}
 
 	private void OnTriggerEnter(Collider collider)
-	{
-		if (onHand && collider.gameObject.GetComponent<limitatingStructure>() != null) {			
-
-			//update limitation and set position of object using the new limitations 
-			//TODO: in schleife nur die neue Position berechnen und einmal am Ende setzen --> dann muss nur eine Positionsänderung synchronisiert werden --> vermutlich deutlich weniger traffic !!!
-			if (collider.gameObject.GetComponent<limitatingStructure> ().axis.ToString().Equals("X")) {				
-				isXAxisLimited = true;
-				limitatingColliderXAxis = collider;
-				isXAxisCollisionInverted = (collider.gameObject.transform.rotation.y == 180);
-									
-				while (collider.bounds.Intersects(gameObject.GetComponent<Renderer>().bounds)) {
-					if(!isXAxisCollisionInverted)
-						gameObject.transform.position = new Vector3 (gameObject.transform.position.x - 0.1f, gameObject.transform.position.y, gameObject.transform.position.z);
-					else
-						gameObject.transform.position = new Vector3 (gameObject.transform.position.x + 0.1f, gameObject.transform.position.y, gameObject.transform.position.z);
-				}
-
-				XAxisLimitDifference = playerHand.transform.position.x-(collider.bounds.max.x-(collider.bounds.max.x - collider.bounds.min.x));
-				
+	{		
+		if (playerHand!=null && collider.gameObject.GetComponent<limitatingStructure>() != null) {
+			if (collider.gameObject.GetComponent<limitatingStructure> ().axis.ToString().Equals("X")) {	
+				handleCollision (xAxisCollider, collider);				
 			} else if (collider.gameObject.GetComponent<limitatingStructure> ().axis.ToString().Equals("Y")) {				
-				isYAxisLimited = true;
-				limitatingColliderYAxis = collider;
-				isYAxisCollisionInverted = (collider.gameObject.transform.rotation.x == 0);
-
-				while (collider.bounds.Intersects(gameObject.GetComponent<Renderer>().bounds)) {
-					if(!isYAxisCollisionInverted)
-						gameObject.transform.position = new Vector3 (gameObject.transform.position.x, gameObject.transform.position.y - 0.1f, gameObject.transform.position.z);
-					else
-						gameObject.transform.position = new Vector3 (gameObject.transform.position.x, gameObject.transform.position.y + 0.1f, gameObject.transform.position.z);
-				}
-
-				YAxisLimitDifference = playerHand.transform.position.y-(collider.bounds.max.y-(collider.bounds.max.y - collider.bounds.min.y));
-				
+				handleCollision (yAxisCollider, collider);					
 			} else if(collider.gameObject.GetComponent<limitatingStructure> ().axis.ToString().Equals("Z")) {				
-				isZAxisLimited = true;
-				limitatingColliderZAxis = collider;
-				isZAxisCollisionInverted = (collider.gameObject.transform.rotation.y == 90);
-
-				while (collider.bounds.Intersects(gameObject.GetComponent<Renderer>().bounds)) {
-					if(!isZAxisCollisionInverted)
-						gameObject.transform.position = new Vector3 (gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z - 0.1f);
-					else
-						gameObject.transform.position = new Vector3 (gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z + 0.1f);
-				}
-
-				ZAxisLimitDifference = playerHand.transform.position.z-(collider.bounds.max.z-(collider.bounds.max.z - collider.bounds.min.z));
+				handleCollision (zAxisCollider, collider);	
 			}
-
-			Debug.Log ("isXAxisCollisionInverted: "+isXAxisCollisionInverted);
-			Debug.Log ("isYAxisCollisionInverted: "+isYAxisCollisionInverted);
-			Debug.Log ("isZAxisCollisionInverted: "+isZAxisCollisionInverted);
 		}
 	}
 
 	void Update(){	
-		//update internal used positions
-		oldPositionX = newPositionX;
-		oldPositionY = newPositionY;
-		oldPositionZ = newPositionZ;
+		if(playerHand!=null){			
+			//update internal used positions
+			oldObjectPos = gameObject.transform.position;
+			newObjectPos = new Vector3 (playerHand.transform.position.x, playerHand.transform.position.y, playerHand.transform.position.z);
+			oldHandPos = newHandPos;
+			newHandPos = new Vector3 (playerHand.transform.position.x, playerHand.transform.position.y, playerHand.transform.position.z);
 
-		//TODO: playerhand ist null wenn nichtr genutzt --> alles hier in if-abfrage darunter ziehen
-		//-->oldPos/newPos dann redundant !!!
-		newPositionX = playerHand.transform.position.x;
-		newPositionY = playerHand.transform.position.y;
-		newPositionZ = playerHand.transform.position.z;
+			//set rotation of controller to this object
+			gameObject.transform.rotation = playerHand.transform.rotation;
 
-		//set rotation of controller to this object
-		gameObject.transform.rotation = playerHand.transform.rotation;
-						
-		//update limitations and check if they still have to be applied
-		if (isXAxisLimited) {			
-			XAxisLimitDifference += (newPositionX - oldPositionX);
-		}
-		if (isYAxisLimited) {
-			YAxisLimitDifference += (newPositionY - oldPositionY);
-		}
-		if (isZAxisLimited) {			
-			ZAxisLimitDifference += (newPositionZ - oldPositionZ);
-		}
+			//update collider distance
+			xAxisCollider.setColliderDistance(xAxisCollider.getColliderDistance()+(newHandPos.x - oldHandPos.x));
+			yAxisCollider.setColliderDistance(yAxisCollider.getColliderDistance()+(newHandPos.y - oldHandPos.y));
+			zAxisCollider.setColliderDistance(zAxisCollider.getColliderDistance()+(newHandPos.z - oldHandPos.z));
 
-		if(playerHand!=null){
-			Vector3 oldPos = gameObject.transform.position;
-			Vector3 newPos = new Vector3 (playerHand.transform.position.x, playerHand.transform.position.y, playerHand.transform.position.z);
-
-			//TODO: Faktor benutzen, um die Richtung der Wand zu bestimmen?
-
-			if (isXAxisLimited && ((! isXAxisCollisionInverted && XAxisLimitDifference<0) || (isXAxisCollisionInverted && XAxisLimitDifference>0))) {
-				Debug.Log ("! isXAxisCollisionInverted && XAxisLimitDifference<0 = "+(! isXAxisCollisionInverted && XAxisLimitDifference<0));
-				Debug.Log ("isXAxisCollisionInverted && XAxisLimitDifference>0 = "+(isXAxisCollisionInverted && XAxisLimitDifference>0));
-				newPos.x = oldPos.x;
+			//do NOT / UNDO move in certain direction if it is limited atm
+			if (xAxisCollider.isCurrentlyLimited()) {				
+				newObjectPos.x = oldObjectPos.x;
 			}
-			if (isYAxisLimited && ((! isYAxisCollisionInverted && YAxisLimitDifference<0) || (isYAxisCollisionInverted && YAxisLimitDifference>0))) {				
-				newPos.y = oldPos.y;
+			if (yAxisCollider.isCurrentlyLimited()) {				
+				newObjectPos.y = oldObjectPos.y;
 			}
-			if (isZAxisLimited && ((! isZAxisCollisionInverted && ZAxisLimitDifference<0) || (isZAxisCollisionInverted && ZAxisLimitDifference>0))) {
-				newPos.z = oldPos.z;
+			if (zAxisCollider.isCurrentlyLimited()) {
+				newObjectPos.z = oldObjectPos.z;
 			}
 
-			gameObject.transform.position = newPos;
-
-			Debug.Log ("xAxisDifference: " + XAxisLimitDifference);
-			//Debug.Log ("yAxisDifference: " + YAxisLimitDifference);
-			//Debug.Log ("zAxisDifference: " + ZAxisLimitDifference);
-
+			//update object position
+			gameObject.transform.position = newObjectPos;
 		}
 	}
 
-
+	private void handleCollision(WallCollidingAxis wallCollidingAxis, Collider collider){
+		wallCollidingAxis.setLimited (true);
+		wallCollidingAxis.setLimitatingCollider (collider);
+		wallCollidingAxis.moveToClosestPositionToCollider (gameObject);
+		wallCollidingAxis.setColliderDistance (playerHand.transform.position.x-(collider.bounds.max.x-(collider.bounds.max.x - collider.bounds.min.x)));
+	}
 }
