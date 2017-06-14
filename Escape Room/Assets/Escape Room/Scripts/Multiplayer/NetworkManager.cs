@@ -1,15 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NetworkManager : MonoBehaviour {
-
-    public GameObject headPrefab;
-    public GameObject leftHandPrefab;
-    public GameObject rightHandPrefab;
-
+    
     [SerializeField]
     private bool debuggConnect = false;
+
+    [SerializeField]
+    private GameObject headPrefab;
+    [SerializeField]
+    private GameObject leftHandPrefab;
+    [SerializeField]
+    private GameObject rightHandPrefab;
 
     public virtual void Start()
     {
@@ -63,9 +67,35 @@ public class NetworkManager : MonoBehaviour {
 
     public void OnJoinedRoom()
     {
+
         Debug.Log("OnJoinedRoom() called by PUN. Now this client is in a room. From here on, your game would be running. For reference, all callbacks are listed in enum: PhotonNetworkingMessage");
-        PhotonNetwork.Instantiate(headPrefab.name, ViveManager.Instance.head.transform.position, ViveManager.Instance.head.transform.rotation, 0);
-        PhotonNetwork.Instantiate(leftHandPrefab.name, ViveManager.Instance.leftHand.transform.position, ViveManager.Instance.leftHand.transform.rotation, 0);
-        PhotonNetwork.Instantiate(rightHandPrefab.name, ViveManager.Instance.rightHand.transform.position, ViveManager.Instance.rightHand.transform.rotation, 0);
+
+        if (headPrefab == null || leftHandPrefab == null || rightHandPrefab == null)
+        {
+            Debug.LogError(
+                "<Color=Red><a>Missing</a></Color> one or more playerPrefab Reference. Please set it up in GameObject 'NetworkManager'",
+                this);
+        }
+        else
+        {
+            PhotonNetwork.Instantiate(headPrefab.name, ViveManager.Instance.head.transform.position,
+                ViveManager.Instance.head.transform.rotation, 0);
+            PhotonNetwork.Instantiate(leftHandPrefab.name, ViveManager.Instance.leftHand.transform.position,
+                ViveManager.Instance.leftHand.transform.rotation, 0);
+            PhotonNetwork.Instantiate(rightHandPrefab.name, ViveManager.Instance.rightHand.transform.position,
+                ViveManager.Instance.rightHand.transform.rotation, 0);
+        }
+
+        //SceneManager.LoadScene(1);
+    }
+
+    public void OnLeftRoom()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void OnDisconnectedFromPhoton()
+    {
+        SceneManager.LoadScene(0);
     }
 }

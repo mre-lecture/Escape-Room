@@ -16,6 +16,8 @@ public class ViveManager : MonoBehaviour {
         {
             Instance = this;
         }
+
+        //DontDestroyOnLoad(this.gameObject);
     }
 
     void OnDestroy()
