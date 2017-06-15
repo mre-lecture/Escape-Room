@@ -6,15 +6,10 @@ namespace AssemblyCSharp
 {
 	public class WallCollidingAxis
 	{
-
-		private bool limited;
+		private bool limited, inverted;
 		private Collider limitatingCollider;
-		private bool inverted;
-		private float colliderDistance;
-
+		private float colliderDistance, xAxisTransformation, yAxisTransformation, zAxisTransformation;
 		private Axis axis;
-
-		private float xAxisTransformation, yAxisTransformation, zAxisTransformation;
 
 		public WallCollidingAxis (Axis axis)
 		{
@@ -26,6 +21,10 @@ namespace AssemblyCSharp
 				yAxisTransformation = 0.1f;
 			else if (axis == Axis.Z)
 				zAxisTransformation = 0.1f;
+		}
+
+		public Axis getAxis(){
+			return this.axis;
 		}
 
 		public void setLimited(bool limited){
@@ -47,6 +46,10 @@ namespace AssemblyCSharp
 				inverted = (limitatingCollider.gameObject.transform.eulerAngles.y == 90);
 		}
 
+		public Collider getLimitatingCollider(){
+			return this.limitatingCollider;
+		}
+
 		public void setColliderDistance(float colliderDistance){
 			this.colliderDistance = colliderDistance;
 		}
@@ -63,7 +66,7 @@ namespace AssemblyCSharp
 			return this.inverted;
 		}
 
-		public void moveToClosestPositionToCollider(GameObject gameObject){	
+		public void moveToClosestPositionToCollider(GameObject gameObject){				
 			while (limitatingCollider.bounds.Intersects(gameObject.GetComponent<Renderer>().bounds)) {
 				if(inverted)
 					gameObject.transform.position = new Vector3 (gameObject.transform.position.x + xAxisTransformation, gameObject.transform.position.y + yAxisTransformation, gameObject.transform.position.z + zAxisTransformation);
@@ -77,4 +80,3 @@ namespace AssemblyCSharp
 		}
 	}
 }
-

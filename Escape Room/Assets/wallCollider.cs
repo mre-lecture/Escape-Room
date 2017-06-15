@@ -60,6 +60,11 @@ public class wallCollider : MonoBehaviour {
 			//set rotation of controller to this object
 			gameObject.transform.rotation = playerHand.transform.rotation;
 
+			//check if limitating wall still exists (in some puzzles colliding objects are burned and destroyed)
+			xAxisCollider.setLimited(xAxisCollider.isLimited() && xAxisCollider.getLimitatingCollider() != null);
+			yAxisCollider.setLimited(yAxisCollider.isLimited() && yAxisCollider.getLimitatingCollider() != null);
+			zAxisCollider.setLimited(zAxisCollider.isLimited() && zAxisCollider.getLimitatingCollider() != null);
+
 			//update collider distance
 			xAxisCollider.setColliderDistance(xAxisCollider.getColliderDistance()+(newHandPos.x - oldHandPos.x));
 			yAxisCollider.setColliderDistance(yAxisCollider.getColliderDistance()+(newHandPos.y - oldHandPos.y));
@@ -85,6 +90,15 @@ public class wallCollider : MonoBehaviour {
 		wallCollidingAxis.setLimited (true);
 		wallCollidingAxis.setLimitatingCollider (collider);
 		wallCollidingAxis.moveToClosestPositionToCollider (gameObject);
-		wallCollidingAxis.setColliderDistance (playerHand.transform.position.x-(collider.bounds.max.x-(collider.bounds.max.x - collider.bounds.min.x)));
+		wallCollidingAxis.setColliderDistance (calculateInitialColliderDistance(wallCollidingAxis, collider));
+	}
+
+	private float calculateInitialColliderDistance(WallCollidingAxis wallCollidingAxis, Collider collider){
+		if (wallCollidingAxis.getAxis () == WallCollidingAxis.Axis.X)
+			return playerHand.transform.position.x - (collider.bounds.max.x - (collider.bounds.max.x - collider.bounds.min.x));
+		else if (wallCollidingAxis.getAxis () == WallCollidingAxis.Axis.Y) 
+			return playerHand.transform.position.y - (collider.bounds.max.y - (collider.bounds.max.y - collider.bounds.min.y));
+		else 
+			return playerHand.transform.position.z-(collider.bounds.max.z-(collider.bounds.max.z - collider.bounds.min.z));
 	}
 }
