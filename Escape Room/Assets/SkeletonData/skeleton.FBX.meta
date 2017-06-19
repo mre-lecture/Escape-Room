@@ -118,12 +118,12 @@ ModelImporter:
       name: idle
       takeName: 
       firstFrame: 0
-      lastFrame: 240
-      wrapMode: 0
+      lastFrame: 225
+      wrapMode: 4
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
-      loop: 0
+      loop: 1
       hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
