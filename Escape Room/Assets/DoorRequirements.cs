@@ -20,7 +20,7 @@ namespace Valve.VR.InteractionSystem{
 						unlocked = false;
 				}
 				if (unlocked) {
-					GetComponent<CircularDrive> ().maxAngle = 0;
+					GetComponent<CircularDrive> ().maxAngle = 90;
 				}
 			}
 		}

@@ -20,7 +20,7 @@ public class torchRotationSync : MonoBehaviour
     {
         GetComponent<CircularDrive>().outAngle = 0;
         //TODO: Adjust rotation to the scene
-        gameObject.transform.eulerAngles = new Vector3(0, 180, 0);
+        gameObject.transform.eulerAngles = new Vector3(0, 90, 0);
     }
 
 }

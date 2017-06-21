@@ -14,6 +14,9 @@ public class KnightFigurePlace : MonoBehaviour {
 	[SerializeField]
 	private artusSword swordScript;
 
+	[SerializeField]
+	private GameObject positionPlaceholder;
+
 	private bool holdsFigure;
 
 	void OnTriggerEnter(Collider collider){		
@@ -28,11 +31,10 @@ public class KnightFigurePlace : MonoBehaviour {
 			fallbackHand.GetComponent<Hand>().DetachObject(collider.gameObject,true);
 			//remove throwable script
 			Destroy (collider.gameObject.GetComponent<Throwable>());
+			Destroy (collider.gameObject.GetComponent<Interactable>());
 			Destroy (collider.gameObject.GetComponent<Rigidbody>());
-			//add knight to hierarchy
-			collider.gameObject.transform.SetParent(gameObject.transform);
 			//set knight position
-			collider.gameObject.transform.localPosition = new Vector3(0,0,0);
+			collider.gameObject.transform.position = positionPlaceholder.transform.position;
 			//set knight rotation
 			collider.gameObject.transform.eulerAngles = new Vector3(270,KnightYRotation,0);
 			//update sword
