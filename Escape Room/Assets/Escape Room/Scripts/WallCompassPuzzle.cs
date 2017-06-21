@@ -94,7 +94,9 @@ public class WallCompassPuzzle : MonoBehaviour {
 
     private void openFlap()
     {
-        unlockableFlap.transform.Rotate(Vector3.forward * 90);
+        //unlockableFlap.transform.Rotate(Vector3.forward * 90);
+		unlockableFlap.transform.eulerAngles = new Vector3(0, 0, 0);
+
     }
 
 
