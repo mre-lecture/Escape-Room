@@ -9,6 +9,9 @@ namespace Valve.VR.InteractionSystem{
 		[SerializeField]
 		private GameObject[] requiredLights;
 
+		[SerializeField]
+		private GameObject syncVariablesObject;
+
 		private bool unlocked;
 		
 		// Update is called once per frame
@@ -21,6 +24,7 @@ namespace Valve.VR.InteractionSystem{
 				}
 				if (unlocked) {
 					GetComponent<CircularDrive> ().maxAngle = 90;
+					syncVariablesObject.GetComponent<SyncVariables> ().syncHallwayOpenedStatus ();
 				}
 			}
 		}
