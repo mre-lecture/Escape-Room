@@ -13,6 +13,9 @@ public class ignitable : MonoBehaviour {
 	[SerializeField]
 	private GameObject flame;
 
+	[SerializeField]
+	private GameObject cage;
+
 	private bool alreadyActive;
 
 	void OnTriggerEnter(Collider collider){	
@@ -28,5 +31,6 @@ public class ignitable : MonoBehaviour {
 		Destroy (gameObject);
 		flame.GetComponent<ParticleSystem> ().Stop ();
 		GetComponent<Light> ().enabled = false;
+		cage.GetComponent<cageHandler> ().fireEvent ();
 	}
 }
