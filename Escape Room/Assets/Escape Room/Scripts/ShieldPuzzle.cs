@@ -10,6 +10,8 @@ public class ShieldPuzzle : MonoBehaviour {
 
     public GameObject[] solutionOrderShields;
     private GameObject[] executedOrder;
+	private float[] shieldMinAngles;
+	private float[] shieldMaxAngles;
     
     private int progress = 0;
 
@@ -17,13 +19,29 @@ public class ShieldPuzzle : MonoBehaviour {
     void Start ()
     {
         executedOrder = new GameObject[solutionOrderShields.Length];
+		shieldMinAngles = new float[solutionOrderShields.Length];
+		shieldMaxAngles = new float[solutionOrderShields.Length];
+
+		for (int i = 0; i < solutionOrderShields.Length; i++)
+		{
+			shieldMinAngles [i] = solutionOrderShields [i].GetComponent<CircularDrive> ().minAngle;
+			shieldMaxAngles [i] = solutionOrderShields [i].GetComponent<CircularDrive> ().maxAngle;
+		}
     }
 
 
     public void onShieldRotated(GameObject shield)
     {
-		// disable rotation -> make min and max angle equal
-		shield.GetComponent<CircularDrive>().maxAngle = shield.GetComponent<CircularDrive>().minAngle;
+		if (shield.GetComponent<CircularDrive>().minAngle < 0)
+		{
+			// disable rotation -> make min and max angle equal
+			shield.GetComponent<CircularDrive>().maxAngle = shield.GetComponent<CircularDrive>().minAngle;
+		}
+		else
+		{
+			shield.GetComponent<CircularDrive>().minAngle = shield.GetComponent<CircularDrive>().maxAngle;
+		}
+			
 
         executedOrder[progress] = shield;
         progress++;
@@ -70,7 +88,7 @@ public class ShieldPuzzle : MonoBehaviour {
 
     private void resetPuzzle()
     {
-        foreach (GameObject shield in solutionOrderShields)
+        /*foreach (GameObject shield in solutionOrderShields)
         {
             progress = 0;
             
@@ -88,6 +106,35 @@ public class ShieldPuzzle : MonoBehaviour {
 
             //rotate shields back
             shield.GetComponent<Animation>().Play();
-        }
+        }*/
+
+		for (int i = 0; i < solutionOrderShields.Length; i++) 
+		{
+			progress = 0;
+			GameObject shield = solutionOrderShields[i];
+
+			//detach shield, if attached to a hand
+			Hand[] hands = FindObjectsOfType<Hand>();
+			foreach (Hand hand in hands)
+			{
+				hand.DetachObject(shield, true);
+			}
+
+			if (shieldMinAngles[i] < 0) 
+			{
+				shield.GetComponent<CircularDrive>().maxAngle = shieldMaxAngles[i];
+				shield.GetComponent<CircularDrive>().outAngle = shieldMaxAngles[i];
+			}
+			else
+			{
+				shield.GetComponent<CircularDrive>().minAngle = shieldMinAngles[i];
+				shield.GetComponent<CircularDrive>().outAngle = shieldMinAngles[i];
+			}
+
+
+			//rotate shields back
+			shield.GetComponent<Animation>().Play();
+		}
+			
     }
 }
