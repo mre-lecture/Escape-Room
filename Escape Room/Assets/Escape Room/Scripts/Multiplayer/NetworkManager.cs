@@ -86,6 +86,9 @@ public class NetworkManager : MonoBehaviour {
                 ViveManager.Instance.rightHand.transform.rotation, 0);
         }
 
-        SceneManager.LoadScene(1);
+        if (!debuggConnect)
+        {
+            SceneManager.LoadScene(1);
+        }
     }
 }
