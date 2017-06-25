@@ -23,11 +23,11 @@ public class KeyAnimationScript : MonoBehaviour
         {
             animator.enabled = true;
 
-            //Should be done right before destroy, but don`t know how to
-            //we need to do this, before this object is destroyed!
+            //Should be done on the end of the animation and right before destroy,
+			//but don`t know how to do it
             UnlockDoor();
 
-            //Destroy this this object after the animation is finished
+            //Destroy this object after the animation is finished
             Destroy(gameObject, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
             
 
