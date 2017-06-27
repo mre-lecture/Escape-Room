@@ -6,7 +6,7 @@ using System;
 using Valve.VR.InteractionSystem;
 
 
-public class WallCompassPuzzle : MonoBehaviour {
+public class WallCompassPuzzle : Photon.MonoBehaviour {
 
 
     public enum CompassDirection { North, East, South, West };
@@ -51,7 +51,7 @@ public class WallCompassPuzzle : MonoBehaviour {
         if (progress >= directionOrder.Length)
         {
             //puzzle solved -> open flap
-            openFlap();
+			photonView.RPC("openFlap", PhotonTargets.All);
             addScriptsToUnlockedItems();
 
             //script isn`t needed anymore -> destroy
@@ -91,11 +91,10 @@ public class WallCompassPuzzle : MonoBehaviour {
         return direction;
     }
 
-
+	[PunRPC]
     private void openFlap()
-    {
-		unlockableFlap.transform.eulerAngles = new Vector3(0, 0, 0);
-
+    {		
+		Destroy (unlockableFlap);
     }
 
 
@@ -111,4 +110,5 @@ public class WallCompassPuzzle : MonoBehaviour {
             unlockableItem.GetComponent<Throwable>().onDetachFromHand = new UnityEngine.Events.UnityEvent();
         }
     }
+
 }
