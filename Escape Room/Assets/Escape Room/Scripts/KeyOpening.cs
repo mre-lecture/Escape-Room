@@ -51,7 +51,7 @@ public class KeyOpening : Photon.MonoBehaviour
 
 	[PunRPC]
 	private void SyncDestroy(){
-		photonView.RPC("ButtonPressed", PhotonTargets.All);
+		photonView.RPC("DestroyKey", PhotonTargets.All);
 	}
 
 	[PunRPC]

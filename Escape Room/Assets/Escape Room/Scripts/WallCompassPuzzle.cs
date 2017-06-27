@@ -55,7 +55,7 @@ public class WallCompassPuzzle : Photon.MonoBehaviour {
             addScriptsToUnlockedItems();
 
             //script isn`t needed anymore -> destroy
-            Destroy(this);
+            //Destroy(this);
         }
     }
 
