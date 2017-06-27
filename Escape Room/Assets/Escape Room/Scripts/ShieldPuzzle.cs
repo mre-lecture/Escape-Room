@@ -9,7 +9,7 @@ public class ShieldPuzzle : Photon.MonoBehaviour {
     public GameObject kingsShield;
 
     public GameObject[] solutionOrderShields;
-    private GameObject[] executedOrder;
+    private String[] executedOrder;
 	private float[] shieldMinAngles;
 	private float[] shieldMaxAngles;
     
@@ -43,17 +43,17 @@ public class ShieldPuzzle : Photon.MonoBehaviour {
 			shield.GetComponent<CircularDrive>().minAngle = shield.GetComponent<CircularDrive>().maxAngle;
 		}
 
-		executedOrder[progress] = shield;
-		photonView.RPC("onShieldRotatedRPC", PhotonTargets.All);
+
+		photonView.RPC("onShieldRotatedRPC", PhotonTargets.All, shield.gameObject.name);
 
     }
 
 	[PunRPC]
-	private void onShieldRotatedRPC(){
+	private void onShieldRotatedRPC(String name){
 		Debug.Log ("onShieldRotated");
 
 
-
+		executedOrder[progress] = name;
 
 		progress++;
 
@@ -76,7 +76,7 @@ public class ShieldPuzzle : Photon.MonoBehaviour {
 
         for (int i = 0; i < solutionOrderShields.Length; i++)
         {
-            if (solutionOrderShields[i] != executedOrder[i])
+			if (solutionOrderShields[i].name != executedOrder[i])
             {
                 puzzleSolved = false;
             }
