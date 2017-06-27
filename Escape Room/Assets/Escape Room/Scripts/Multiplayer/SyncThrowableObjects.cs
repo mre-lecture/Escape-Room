@@ -47,8 +47,12 @@ public class SyncThrowableObjects : SyncInteractableObjects
         if (!photonView.isMine)
         {
             Debug.Log(gameObject.name + " gegriffen");
-            GetComponent<Rigidbody>().isKinematic = true;
-            GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.None;
+            if (GetComponent<Rigidbody>() != null)
+            {
+                GetComponent<Rigidbody>().isKinematic = true;
+                GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.None;
+            }
+            
         }
     }
 
@@ -58,8 +62,12 @@ public class SyncThrowableObjects : SyncInteractableObjects
         if (!photonView.isMine)
         {
             Debug.Log(gameObject.name + " losgelassen");
-            GetComponent<Rigidbody>().isKinematic = false;
-            GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
+            if (GetComponent<Rigidbody>() != null)
+            {
+                GetComponent<Rigidbody>().isKinematic = false;
+                GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
+            }
+           
         }
     }
 }
