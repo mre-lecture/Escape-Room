@@ -40,17 +40,21 @@ public class ButtonBehavior : MonoBehaviour
     // For Trigger Enter - Check Collider
     private void pressButton()
     {
-        if (pressed)
-        {
-            activeButton.transform.position += new Vector3(DISTANCE, 0, 0);
-            pressed = false;
-            return;
-        }
-        else
-        {
-            activeButton.transform.position += new Vector3(-DISTANCE, 0, 0);
-            pressed = true;
-        }
-
+        
+		photonView.RPC("ButtonPressed", PhotonTargets.All);
     }
+
+	[PunRPC]
+	void ButtonPressed(){
+		if (pressed)
+		{
+			activeButton.transform.position += new Vector3(DISTANCE, 0, 0);
+			pressed = false;
+		}
+		else
+		{
+			activeButton.transform.position += new Vector3(-DISTANCE, 0, 0);
+			pressed = true;
+		}
+	}
 }
