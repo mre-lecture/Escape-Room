@@ -97,7 +97,7 @@ public class ButtonsBehavior : MonoBehaviour
 
             Destroy(hiddenDoor);
 
-            hiddenContent.AddComponent<Throwable>();
+            //hiddenContent.AddComponent<Throwable>();
         }
     }
 
