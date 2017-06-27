@@ -94,8 +94,8 @@ public class WallCompassPuzzle : Photon.MonoBehaviour {
 
 	[PunRPC]
     private void openFlap()
-    {		
-		Destroy (unlockableFlap);
+    {	
+		unlockableFlap.transform.position = new Vector3 (-1000,-1000,-1000);	
     }
 
 
