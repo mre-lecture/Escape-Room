@@ -29,7 +29,7 @@ public class ButtonBehavior : MonoBehaviour
 
     }
 
-    /*private void HandHoverUpdate(Hand hand)
+    private void HandHoverUpdate(Hand hand)
     {
         if (hand.GetStandardInteractionButtonDown())
         {
@@ -53,5 +53,4 @@ public class ButtonBehavior : MonoBehaviour
         }
 
     }
-    */
 }
