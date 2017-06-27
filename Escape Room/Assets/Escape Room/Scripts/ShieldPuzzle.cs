@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 using Valve.VR.InteractionSystem;
 
-public class ShieldPuzzle : MonoBehaviour {
+public class ShieldPuzzle : Photon.MonoBehaviour {
 
     public GameObject kingsShield;
 
@@ -79,6 +79,8 @@ public class ShieldPuzzle : MonoBehaviour {
     {   
         kingsShield.AddComponent<Interactable>();
         kingsShield.AddComponent<Throwable>();
+        kingsShield.AddComponent<SyncThrowableObjects>();
+        photonView.ObservedComponents.Add(GetComponent <SyncThrowableObjects>());
         //manually instantiate both unity events because of some weird bug they are
         //sometimes not automatically added. That causes the throwable script not to work properly
         kingsShield.GetComponent<Throwable>().onPickUp = new UnityEngine.Events.UnityEvent();

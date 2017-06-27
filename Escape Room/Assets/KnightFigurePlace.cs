@@ -9,9 +9,6 @@ public class KnightFigurePlace : MonoBehaviour {
 	private int KnightYRotation = 0;
 
 	[SerializeField]
-	private GameObject hand1,hand2,fallbackHand;
-
-	[SerializeField]
 	private artusSword swordScript;
 
 	[SerializeField]
@@ -25,12 +22,23 @@ public class KnightFigurePlace : MonoBehaviour {
 			holdsFigure = true;
 			//detach from hand
 			collider.gameObject.transform.parent = null;
-			//detach object from hand (depending on which hand it is in)
-			hand1.GetComponent<Hand>().DetachObject(collider.gameObject,true);
-			hand2.GetComponent<Hand>().DetachObject(collider.gameObject,true);
-			fallbackHand.GetComponent<Hand>().DetachObject(collider.gameObject,true);
-			//remove throwable script
-			Destroy (collider.gameObject.GetComponent<Throwable>());
+            //detach object from hand (depending on which hand it is in)
+            if (GameObject.Find("Hand1") != null)
+            {
+                GameObject.Find("Hand1").GetComponent<Hand>().DetachObject(collider.gameObject, true);
+            }
+
+            if (GameObject.Find("Hand2") != null)
+            {
+                GameObject.Find("Hand2").GetComponent<Hand>().DetachObject(collider.gameObject, true);
+            }
+
+            if (GameObject.Find("FallbackHand") != null)
+            {
+                GameObject.Find("FallbackHand").GetComponent<Hand>().DetachObject(collider.gameObject, true);
+            }
+            //remove throwable script
+            Destroy (collider.gameObject.GetComponent<Throwable>());
 			Destroy (collider.gameObject.GetComponent<Interactable>());
 			Destroy (collider.gameObject.GetComponent<Rigidbody>());
 			//set knight position
