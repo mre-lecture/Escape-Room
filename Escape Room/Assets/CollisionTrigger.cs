@@ -20,20 +20,31 @@ namespace Valve.VR.InteractionSystem{
 		[SerializeField]
 		private GameObject hiddenDoor;
 
-		[SerializeField]
-		private GameObject hand1,hand2,fallbackHand;
-
 
 		void OnTriggerEnter(Collider collider){
 			if (collider.gameObject == fittingObject) {	
 				//detach from hand
 				collider.gameObject.transform.parent = null;
-				//detach object from hand (depending on which hand it is in)
-				hand1.GetComponent<Hand>().DetachObject(collider.gameObject,true);
-				hand2.GetComponent<Hand>().DetachObject(collider.gameObject,true);
-				fallbackHand.GetComponent<Hand>().DetachObject(collider.gameObject,true);
+                //detach object from hand (depending on which hand it is in)
+
+			    if (GameObject.Find("Hand1") != null)
+			    {
+			        GameObject.Find("Hand1").GetComponent<Hand>().DetachObject(collider.gameObject, true);
+                }
+
+			    if (GameObject.Find("Hand2") != null)
+			    {
+			        GameObject.Find("Hand2").GetComponent<Hand>().DetachObject(collider.gameObject, true);
+			    }
+                
+			    if (GameObject.Find("FallbackHand") != null)
+			    {
+			        GameObject.Find("FallbackHand").GetComponent<Hand>().DetachObject(collider.gameObject, true);
+			    }
 				//remove throwable script
 				Destroy (collider.gameObject.GetComponent<Throwable>());
+
+                Destroy(collider.gameObject.GetComponent<Rigidbody>());
 				//set final position of object
 				collider.gameObject.transform.position = finalPosition;
 				//set final rotation of object
