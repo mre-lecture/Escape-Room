@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Valve.VR.InteractionSystem;
 
 public class ButtonsBehavior : MonoBehaviour
 {
@@ -34,6 +35,9 @@ public class ButtonsBehavior : MonoBehaviour
 
     [SerializeField]
     private GameObject hiddenDoor;
+
+    [SerializeField]
+    private GameObject hiddenContent;
 
 
     // Update is called once per frame
@@ -92,6 +96,8 @@ public class ButtonsBehavior : MonoBehaviour
             Destroy(button9.GetComponent<BoxCollider>());
 
             Destroy(hiddenDoor);
+
+            hiddenContent.AddComponent<Throwable>();
         }
     }
 
