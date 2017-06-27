@@ -6,6 +6,7 @@ using Valve.VR.InteractionSystem;
 public class ObjectInsertion : MonoBehaviour {
 
 	public GameObject fittingObject;
+	//public GameObject solveableObject;
 
 	public float fittingObjectLocalXPosition = 0;
 	public float fittingObjectLocalYPosition = 0;
@@ -38,6 +39,11 @@ public class ObjectInsertion : MonoBehaviour {
 			fittingObject.transform.SetParent(gameObject.transform);
 			fittingObject.transform.localPosition = new Vector3 (fittingObjectLocalXPosition, fittingObjectLocalYPosition, fittingObjectLocalZPosition);
 			fittingObject.transform.localRotation = Quaternion.Euler (fittingObjectXRotation, fittingObjectYRotation, fittingObjectZRotation);
+		
+			/*if (solveableObject != null) 
+			{
+				//solveableObject.GetComponent<RüdigerMystery> ().onObjectActivated(gameObject);
+			}*/
 		}
 	}
 }
