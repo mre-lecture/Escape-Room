@@ -96,12 +96,12 @@ public class ButtonsBehavior : MonoBehaviour
             Destroy(button9.GetComponent<BoxCollider>());
 
             Destroy(hiddenDoor);
-
+            /*
             hiddenContent.AddComponent<Interactable>();
             hiddenContent.AddComponent<Throwable>();
 
             hiddenContent.GetComponent<Throwable>().onPickUp = new UnityEngine.Events.UnityEvent();
-            hiddenContent.GetComponent<Throwable>().onDetachFromHand = new UnityEngine.Events.UnityEvent();
+            hiddenContent.GetComponent<Throwable>().onDetachFromHand = new UnityEngine.Events.UnityEvent();*/
         }
     }
 
