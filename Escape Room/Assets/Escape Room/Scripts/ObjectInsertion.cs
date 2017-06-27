@@ -22,21 +22,30 @@ public class ObjectInsertion : MonoBehaviour {
 		if (collider.gameObject == fittingObject)
 		{
 			//detach from hand
-			this.gameObject.transform.parent = null;
+			collider.gameObject.transform.parent = null;
 			//detach object from hand (depending on which hand it is in)
-			Hand[] hands = GetComponents<Hand>();
-			foreach (Hand hand in hands)
+
+			if (GameObject.Find("Hand1") != null)
 			{
-				hand.DetachObject(collider.gameObject, true);
+				GameObject.Find("Hand1").GetComponent<Hand>().DetachObject(collider.gameObject, true);
 			}
 
+			if (GameObject.Find("Hand2") != null)
+			{
+				GameObject.Find("Hand2").GetComponent<Hand>().DetachObject(collider.gameObject, true);
+			}
 
+			if (GameObject.Find("FallbackHand") != null)
+			{
+				GameObject.Find("FallbackHand").GetComponent<Hand>().DetachObject(collider.gameObject, true);
+			}
 			//remove throwable script
 			Destroy (collider.gameObject.GetComponent<Throwable>());
-			Destroy (collider.gameObject.GetComponent<Rigidbody>());
+			Destroy(collider.gameObject.GetComponent<Rigidbody>());
 
 			//add sword to hierarchy
 			fittingObject.transform.SetParent(gameObject.transform);
+
 			fittingObject.transform.localPosition = new Vector3 (fittingObjectLocalXPosition, fittingObjectLocalYPosition, fittingObjectLocalZPosition);
 			fittingObject.transform.localRotation = Quaternion.Euler (fittingObjectXRotation, fittingObjectYRotation, fittingObjectZRotation);
 		
