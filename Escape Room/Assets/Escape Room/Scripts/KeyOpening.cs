@@ -11,6 +11,12 @@ public class KeyOpening : MonoBehaviour
 	public int unlockMinAngle;
 	public int unlockMaxAngle;
 
+    [SerializeField]
+    private bool isLeftDoor, isRightDoor;
+
+    [SerializeField]
+    private GameObject syncObject;
+
 	// Use this for initialization
 	void Start()
 	{
@@ -56,5 +62,12 @@ public class KeyOpening : MonoBehaviour
 		{
 			unlockable.GetComponent<CircularDrive>().maxAngle = unlockMaxAngle;
 		}
+	    if (isLeftDoor)
+	    {
+	        syncObject.GetComponent<SyncVariables>().syncLeftCellOpenedStatus();
+	    }else if (isRightDoor)
+	    {
+	        syncObject.GetComponent<SyncVariables>().syncRightCellOpenedStatus();
+        }
 	}
 }
