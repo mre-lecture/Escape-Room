@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR.InteractionSystem;
 
-public class KeyOpening : MonoBehaviour
+public class KeyOpening : Photon.MonoBehaviour
 {
 
 	public Animator animator;
@@ -35,9 +35,8 @@ public class KeyOpening : MonoBehaviour
 			//but don`t know how to do it
 			UnlockDoor();
 
-			//Destroy this object after the animation is finished
-			Destroy(gameObject, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
 
+			photonView.RPC("ButtonPressed", PhotonTargets.All);
 
 			//detach from hand
 			this.gameObject.transform.parent = null;
@@ -48,6 +47,12 @@ public class KeyOpening : MonoBehaviour
 				hand.DetachObject(collider.gameObject, true);
 			}
 		}
+	}
+
+	[PunRPC]
+	private void DestroyKey(){
+		//Destroy this object after the animation is finished
+		Destroy(gameObject, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
 	}
 
 

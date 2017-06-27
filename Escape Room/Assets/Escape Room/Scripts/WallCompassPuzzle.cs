@@ -51,19 +51,13 @@ public class WallCompassPuzzle : Photon.MonoBehaviour {
         if (progress >= directionOrder.Length)
         {
             //puzzle solved -> open flap
-			syncDoor();
+			photonView.RPC("openFlap", PhotonTargets.All);
             addScriptsToUnlockedItems();
 
             //script isn`t needed anymore -> destroy
             Destroy(this);
         }
     }
-
-	[PunRPC]
-	public void syncDoor()
-	{		
-		photonView.RPC("openFlap", PhotonTargets.All);
-	}
 
 
 
