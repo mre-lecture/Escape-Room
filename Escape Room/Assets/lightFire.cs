@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR.InteractionSystem;
 
-public class lightFire : MonoBehaviour {
+public class lightFire : Photon.MonoBehaviour {
 
 	[SerializeField]
 	private GameObject torchHead;
@@ -16,8 +16,22 @@ public class lightFire : MonoBehaviour {
 
 	void OnTriggerEnter(Collider collider){		
 		if (collider.gameObject == torchHead) {		
-			light.GetComponent<Light> ().enabled = true;
-			flame.GetComponent<ParticleSystem> ().Play ();
+			syncTorch ();
 		}
+	}
+
+	[PunRPC]
+	public void syncTorch()
+	{		
+		photonView.RPC("lightUpTorch", PhotonTargets.All);
+	}
+
+	//------------------------------------------------------------------------
+
+	[PunRPC]
+	public void lightUpTorch()
+	{
+		light.GetComponent<Light> ().enabled = true;
+		flame.GetComponent<ParticleSystem> ().Play ();
 	}
 }

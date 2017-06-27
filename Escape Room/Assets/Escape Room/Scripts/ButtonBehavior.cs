@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR.InteractionSystem;
 
-public class ButtonBehavior : MonoBehaviour
+public class ButtonBehavior : Photon.MonoBehaviour
 {
     public const float DISTANCE = 0.05f;
     public bool pressed = false;
