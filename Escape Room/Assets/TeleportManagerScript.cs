@@ -19,7 +19,7 @@ public class TeleportManagerScript : Photon.MonoBehaviour {
 	private bool masterClient;
 
     //Used to initialize the teleport settings correct for each player
-    void OnJoinedRoom()
+    void Awake()
 	{			
 		masterClient = PhotonNetwork.player.IsMasterClient;
 
