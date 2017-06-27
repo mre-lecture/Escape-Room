@@ -31,8 +31,9 @@ namespace Valve.VR.InteractionSystem{
                     
                     //disable rotation of correct used torches
                     foreach (GameObject go in requiredTorches)
-                    {
-                        Destroy(go.GetComponent<CircularDrive>());
+                    {                        
+						go.GetComponent<CircularDrive> ().outAngle = 20;
+						go.GetComponent<CircularDrive> ().minAngle = 20;
                         go.transform.eulerAngles = new Vector3(0, 180, 20);
                     }
                 }

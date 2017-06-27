@@ -35,8 +35,8 @@ public class KeyOpening : Photon.MonoBehaviour
 			//but don`t know how to do it
 			UnlockDoor();
 
-
-			Invoke("SyncDestroy",this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+			photonView.RPC("DestroyKey", PhotonTargets.All);
+			//Invoke("SyncDestroy",this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
 
 			//detach from hand
 			this.gameObject.transform.parent = null;
@@ -57,8 +57,8 @@ public class KeyOpening : Photon.MonoBehaviour
 	[PunRPC]
 	private void DestroyKey(){
 		//Destroy this object after the animation is finished
-		//Destroy(gameObject, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
-		gameObject.transform.position = new Vector3(-6,7,-1);
+		Destroy(gameObject, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+		//gameObject.transform.position = new Vector3(-6,7,-1);
 	}
 
 
