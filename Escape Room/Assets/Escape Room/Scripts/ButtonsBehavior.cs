@@ -97,7 +97,11 @@ public class ButtonsBehavior : MonoBehaviour
 
             Destroy(hiddenDoor);
 
-            //hiddenContent.AddComponent<Throwable>();
+            hiddenContent.AddComponent<Interactable>();
+            hiddenContent.AddComponent<Throwable>();
+
+            hiddenContent.GetComponent<Throwable>().onPickUp = new UnityEngine.Events.UnityEvent();
+            hiddenContent.GetComponent<Throwable>().onDetachFromHand = new UnityEngine.Events.UnityEvent();
         }
     }
 
