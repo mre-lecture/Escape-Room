@@ -18,7 +18,7 @@ public class ShieldPuzzle : Photon.MonoBehaviour {
 
     void Start ()
     {
-        executedOrder = new GameObject[solutionOrderShields.Length];
+        executedOrder = new String[solutionOrderShields.Length];
 		shieldMinAngles = new float[solutionOrderShields.Length];
 		shieldMaxAngles = new float[solutionOrderShields.Length];
 
