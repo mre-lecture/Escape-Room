@@ -95,7 +95,7 @@ public class ShieldPuzzle : Photon.MonoBehaviour {
 		kingsShield.GetComponent<Throwable>().onDetachFromHand = new UnityEngine.Events.UnityEvent();
 
         kingsShield.AddComponent<SyncThrowableObjects>();
-        photonView.ObservedComponents.Add(GetComponent <SyncThrowableObjects>());
+		kingsShield.GetComponent<PhotonView>().ObservedComponents.Add(kingsShield.GetComponent<SyncThrowableObjects>());
         //manually instantiate both unity events because of some weird bug they are
         //sometimes not automatically added. That causes the throwable script not to work properly
     }
