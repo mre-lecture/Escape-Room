@@ -32,6 +32,7 @@ public class ShieldPuzzle : Photon.MonoBehaviour {
 
     public void onShieldRotated(GameObject shield)
     {
+		Debug.Log ("onShieldRotated");
 		if (shield.GetComponent<CircularDrive>().minAngle < 0)
 		{
 			// disable rotation -> make min and max angle equal
