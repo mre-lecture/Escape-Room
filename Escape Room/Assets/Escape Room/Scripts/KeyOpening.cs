@@ -30,7 +30,7 @@ public class KeyOpening : MonoBehaviour
 			UnlockDoor();
 
 			//Destroy this object after the animation is finished
-			//Destroy(gameObject, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+			Destroy(gameObject, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
 
 
 			//detach from hand
