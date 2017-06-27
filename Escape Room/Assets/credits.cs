@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class credits : MonoBehaviour {
+public class credits : Photon.MonoBehaviour {
 
 	[SerializeField]
 	private GameObject skeleton;
@@ -83,6 +84,8 @@ public class credits : MonoBehaviour {
 			display.text = credit;
 			yield return new WaitForSeconds (secondsUntilNextCredit);
 		}
+
+		photonView.RPC("SwitchToWaitingRoom", PhotonTargets.All);
 	}
 
 	//for test purposes
@@ -96,5 +99,12 @@ public class credits : MonoBehaviour {
 		if (started && !skeleton.GetComponent<Animation> ().isPlaying) {
 			skeleton.GetComponent<Animation> ().Play ();
 		}
+	}
+
+
+	[PunRPC]
+	public void SwitchToWaitingRoom()
+	{
+		SceneManager.LoadScene(1);
 	}
 }
