@@ -19,7 +19,8 @@ public class ignitable : Photon.MonoBehaviour {
 	private bool alreadyActive;
 
 	void OnTriggerEnter(Collider collider){	
-		if (collider.gameObject == ignitionObject && !alreadyActive && !ignitionObjectFlame.GetComponent<ParticleSystem>().isPlaying) {
+
+		if (collider.gameObject == ignitionObject && !alreadyActive && ignitionObjectFlame.GetComponent<ParticleSystem>().isPlaying) {
 			syncStick ();
 		}
 	}
@@ -31,7 +32,6 @@ public class ignitable : Photon.MonoBehaviour {
 		cage.GetComponent<cageHandler> ().fireEvent ();
 	}
 
-	[PunRPC]
 	public void syncStick()
 	{		
 		photonView.RPC("lightUpStick", PhotonTargets.All);

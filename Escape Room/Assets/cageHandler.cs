@@ -17,6 +17,8 @@ public class cageHandler : MonoBehaviour {
 			foreach(GameObject go in unlockableObjects){
 				go.GetComponent<Rigidbody> ().isKinematic = false;
 				go.AddComponent<Throwable> ();
+				go.GetComponent<Throwable>().onPickUp = new UnityEngine.Events.UnityEvent();
+				go.GetComponent<Throwable>().onDetachFromHand = new UnityEngine.Events.UnityEvent();
 			}
 		}			
 	}

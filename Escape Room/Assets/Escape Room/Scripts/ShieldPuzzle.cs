@@ -32,6 +32,11 @@ public class ShieldPuzzle : Photon.MonoBehaviour {
 
     public void onShieldRotated(GameObject shield)
     {
+		photonView.RPC("onShieldRotatedRPC", PhotonTargets.All, shield);
+    }
+
+	[PunRPC]
+	private void onShieldRotatedRPC(GameObject shield){
 		Debug.Log ("onShieldRotated");
 		if (shield.GetComponent<CircularDrive>().minAngle < 0)
 		{
@@ -42,22 +47,22 @@ public class ShieldPuzzle : Photon.MonoBehaviour {
 		{
 			shield.GetComponent<CircularDrive>().minAngle = shield.GetComponent<CircularDrive>().maxAngle;
 		}
-			
 
-        executedOrder[progress] = shield;
-        progress++;
 
-        if (progress >= solutionOrderShields.Length)
-        {
-            if (isPuzzleSolved()) {
-                unlockKingsShield();
-            }
-            else
-            {
-                resetPuzzle();
-            }
-        }
-    }
+		executedOrder[progress] = shield;
+		progress++;
+
+		if (progress >= solutionOrderShields.Length)
+		{
+			if (isPuzzleSolved()) {
+				unlockKingsShield();
+			}
+			else
+			{
+				resetPuzzle();
+			}
+		}
+	}
 
 
     private bool isPuzzleSolved()
@@ -80,12 +85,14 @@ public class ShieldPuzzle : Photon.MonoBehaviour {
     {   
         kingsShield.AddComponent<Interactable>();
         kingsShield.AddComponent<Throwable>();
+
+		kingsShield.GetComponent<Throwable>().onPickUp = new UnityEngine.Events.UnityEvent();
+		kingsShield.GetComponent<Throwable>().onDetachFromHand = new UnityEngine.Events.UnityEvent();
+
         kingsShield.AddComponent<SyncThrowableObjects>();
         photonView.ObservedComponents.Add(GetComponent <SyncThrowableObjects>());
         //manually instantiate both unity events because of some weird bug they are
         //sometimes not automatically added. That causes the throwable script not to work properly
-        kingsShield.GetComponent<Throwable>().onPickUp = new UnityEngine.Events.UnityEvent();
-        kingsShield.GetComponent<Throwable>().onDetachFromHand = new UnityEngine.Events.UnityEvent();
     }
 
 
