@@ -15,6 +15,7 @@ public class CriticalGameObject : MonoBehaviour {
 		if (other.gameObject.tag == "resetGround") {
 			gameObject.transform.position = respawnPosition;
 			gameObject.transform.eulerAngles = respawnRotation;
+			gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
 		}
 	}
 }

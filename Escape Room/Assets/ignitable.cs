@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ignitable : MonoBehaviour {
+public class ignitable : Photon.MonoBehaviour {
 
 	[SerializeField]
 	private GameObject ignitionObject;
@@ -20,10 +20,7 @@ public class ignitable : MonoBehaviour {
 
 	void OnTriggerEnter(Collider collider){	
 		if (collider.gameObject == ignitionObject && !alreadyActive && ignitionObjectFlame.GetComponent<ParticleSystem>().isPlaying) {
-			alreadyActive = true;
-			GetComponent<Light> ().enabled = true;
-			flame.GetComponent<ParticleSystem> ().Play ();
-			Invoke ("destroyAfterBurnedDown", 20);
+			syncStick ();
 		}
 	}
 
@@ -32,5 +29,22 @@ public class ignitable : MonoBehaviour {
 		flame.GetComponent<ParticleSystem> ().Stop ();
 		GetComponent<Light> ().enabled = false;
 		cage.GetComponent<cageHandler> ().fireEvent ();
+	}
+
+	[PunRPC]
+	public void syncStick()
+	{		
+		photonView.RPC("lightUpStick", PhotonTargets.All);
+	}
+
+	//------------------------------------------------------------------------
+
+	[PunRPC]
+	public void lightUpStick()
+	{
+		alreadyActive = true;
+		GetComponent<Light> ().enabled = true;
+		flame.GetComponent<ParticleSystem> ().Play ();
+		Invoke ("destroyAfterBurnedDown", 20);
 	}
 }

@@ -25,8 +25,12 @@ public class SyncMoveableObject : SyncInteractableObjects
         {
             transform.position = Vector3.Lerp(transform.position, this.correctPlayerPos, Time.deltaTime * 15);
             transform.rotation = Quaternion.Lerp(transform.rotation, this.correctPlayerRot, Time.deltaTime * 15);
-            circularDrive.outAngle = correctOutAngle;
-            linearMapping.value = correctLinearMappingValue;
+			if (circularDrive != null) {
+
+				circularDrive.outAngle = correctOutAngle;
+			}
+
+			linearMapping.value = correctLinearMappingValue;
 
         }
     }
@@ -47,7 +51,11 @@ public class SyncMoveableObject : SyncInteractableObjects
             // We own this player: send the others our data
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
-            stream.SendNext(circularDrive.outAngle);
+
+			if (circularDrive != null) {
+				stream.SendNext (circularDrive.outAngle);
+			}
+
             stream.SendNext(linearMapping.value);
         }
         else
@@ -55,7 +63,11 @@ public class SyncMoveableObject : SyncInteractableObjects
             // Network player, receive data
             correctPlayerPos = (Vector3)stream.ReceiveNext();
             correctPlayerRot = (Quaternion)stream.ReceiveNext();
-            correctOutAngle = (float)stream.ReceiveNext();
+
+			if (circularDrive != null) {
+				correctOutAngle = (float)stream.ReceiveNext ();
+			}
+
             correctLinearMappingValue = (float)stream.ReceiveNext();
 
         }
