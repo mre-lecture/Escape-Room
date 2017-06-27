@@ -22,18 +22,21 @@ public class credits : MonoBehaviour {
 
 		"Entwickler:",
 		"Patrick Geyer",
-		"Katharina", 
+		"Katharina Shits", 
 		"Steffen Brehm",
 		"Rico Zieger",
 
 		"Grafiker/Modellierer:",
 		"Patrick Geyer",
-		"Katharina", 
+        "Katharina Shits", 
 		"Steffen Brehm",
 		"Rico Zieger",
 
 		"Rekordhalter im Programm-Zum-Absturz-Bringen:",
 		"Rico Zieger",
+
+        "Master of the Multiplayer:",
+        "Patrick Geyer",
 
 		"Special Guest:\n"+
 		"Rüdiger, das tanzende Skelett",
@@ -84,11 +87,10 @@ public class credits : MonoBehaviour {
 
 	//for test purposes
 	//startCredits has to be called as soon as both players enter the scene
-	/*
 	void Awake(){
 		startCredits ();
 	}
-	*/
+	
 
 	void Update(){
 		if (started && !skeleton.GetComponent<Animation> ().isPlaying) {
