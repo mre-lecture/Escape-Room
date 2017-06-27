@@ -32,12 +32,7 @@ public class ShieldPuzzle : Photon.MonoBehaviour {
 
     public void onShieldRotated(GameObject shield)
     {
-		photonView.RPC("onShieldRotatedRPC", PhotonTargets.All, shield);
-    }
 
-	[PunRPC]
-	private void onShieldRotatedRPC(GameObject shield){
-		Debug.Log ("onShieldRotated");
 		if (shield.GetComponent<CircularDrive>().minAngle < 0)
 		{
 			// disable rotation -> make min and max angle equal
@@ -48,8 +43,18 @@ public class ShieldPuzzle : Photon.MonoBehaviour {
 			shield.GetComponent<CircularDrive>().minAngle = shield.GetComponent<CircularDrive>().maxAngle;
 		}
 
-
 		executedOrder[progress] = shield;
+		photonView.RPC("onShieldRotatedRPC", PhotonTargets.All);
+
+    }
+
+	[PunRPC]
+	private void onShieldRotatedRPC(){
+		Debug.Log ("onShieldRotated");
+
+
+
+
 		progress++;
 
 		if (progress >= solutionOrderShields.Length)
